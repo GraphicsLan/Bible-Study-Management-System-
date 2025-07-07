@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Christian Union - Bible Study </title>
+    <link rel="icon" href="{% static 'registration/photos/Round Logo 2.png' %}" >
+    <link rel="stylesheet" href="{% static 'registration/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'registration/css/dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation - Desktop -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="{% static 'registration/photos/cu logo.jpg' %}" alt="EUNCCU official logo" class="logo">
+                <h2>EUNCCU</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="{% url 'dashboard'%}">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'mygroup' %}">
+                            <i class="fas fa-users"></i>
+                            <span>My bs Group</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'discussion' %}">
+                            <i class="fas fa-comments"></i>
+                            <span>Discussion Forum</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'biblestudies' %}">
+                            <i class="fas fa-bible"></i>
+                            <span>Bible Studies</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'profile' %}">
+                            <i class="fas fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="logout">
+                        <a href="{% url 'login' %}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        {% else %}
+             <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login.html' %}">Login</a>
+            </li>
+             <li class="nav-item">
+                                <a class="nav-link" href="{% url 'reg.html' %}">Register</a>
+             </li>
+        {% endif %}
+
+    {% block body %}{% endblock %}
+    </div>
+    <script>
+ document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.getElementById('sidebarToggle');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    function openSidebar() {
+        sidebar.classList.add('open');
+        sidebar.classList.remove('collapsed');
+        backdrop.style.display = 'block';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        sidebar.classList.add('collapsed');
+        backdrop.style.display = 'none';
+    }
+    toggle.addEventListener('click', function() {
+        if (sidebar.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+    backdrop.addEventListener('click', closeSidebar);
+});
+</script>

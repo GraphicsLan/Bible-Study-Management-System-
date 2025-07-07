@@ -1,0 +1,431 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block body %}
+<main class="main-content">
+    <style>
+        /* Profile Specific Styles */
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-header h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .profile-header p {
+            color: var(--dark-gray);
+            font-size: 1.1rem;
+        }
+
+        /* Profile Card Layout */
+        .profile-card {
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        /* Profile Top Section */
+        .profile-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(44, 142, 34, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        @media (min-width: 768px) {
+            .profile-top {
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+                padding: 2rem 3rem;
+            }
+        }
+
+        .profile-pic-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 768px) {
+            .profile-pic-container {
+                margin-right: 2.5rem;
+                margin-bottom: 0;
+            }
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary-light);
+            box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.03);
+        }
+
+        .upload-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        .profile-info {
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .profile-info {
+                text-align: left;
+            }
+        }
+
+        .profile-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .profile-id {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .profile-role {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(44, 142, 34, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Profile Form Section */
+        .profile-form-section {
+            padding: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .profile-form-section {
+                padding: 2rem 3rem;
+            }
+        }
+
+        .profile-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .profile-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid var(--gray);
+            border-radius: 7px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--light);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 142, 34, 0.13);
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 7px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light);
+            border-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .profile-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .profile-pic-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    <div class="profile-container">
+        <header class="profile-header">
+            <h1>My Profile</h1>
+            <p>Update your registration details below</p>
+        </header>
+
+        <div class="profile-card">
+            <section class="profile-top">
+                <div class="profile-pic-container">
+                    <img src="{% static 'registration/photos/default-profile.jpg' %}" alt="Profile Picture" class="profile-pic" id="profilePicture">
+                    <button class="upload-btn" id="uploadBtn">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <input type="file" id="profileUpload" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="profile-info">
+                    <h2 class="profile-name" id="profileName">Ian Githinji</h2>
+                    <div class="profile-id">User ID: EUNCCU23042</div>
+                    <span class="profile-role">Registered Member</span>
+                </div>
+            </section>
+
+            <!-- Profile Form Section -->
+            <section class="profile-form-section">
+                <form class="profile-form" id="profileForm" method="POST" action="{% url 'update_profile' %}">
+                    {% csrf_token %}
+                    <!-- Personal Information -->
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" value="Ian Githinji" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Update Your Email</label>
+                        <input type="email" id="email" name="email" value="ian@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Update Your Phone Number</label>
+                        <input type="tel" id="phone" name="phone" value="0725023365" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearOfStudy">Update Your Year of Study</label>
+                        <select id="yearOfStudy" name="yearOfStudy" required>
+                            <option value="1" {% if profile.year_of_study == 1 %}selected{% endif %}>Year 1</option>
+                            <option value="2" {% if profile.year_of_study == 2 %}selected{% endif %}>Year 2</option>
+                            <option value="3" {% if profile.year_of_study == 3 %}selected{% endif %}>Year 3</option>
+                            <option value="4" {% if profile.year_of_study == 4 %}selected{% endif %}>Year 4</option>
+                            <option value="5" {% if profile.year_of_study == 5 %}selected{% endif %}>Year 5</option>
+                            <option value="6" {% if profile.year_of_study == 6 %}selected{% endif %}>Year 6</option>
+                        </select>
+                    </div>
+
+                    <!-- Residency Information -->
+                    <div class="form-group">
+                        <label for="residencyType">Residency Type</label>
+                        <select id="residencyType" name="residencyType" required>
+                            <option value="campus" {% if profile.residency_type == 'campus' %}selected{% endif %}>Within Campus</option>
+                            <option value="offCampus" {% if profile.residency_type == 'offCampus' %}selected{% endif %}>Non-Resident</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="campusHallGroup">
+                        <label for="hall">Hall of Residence</label>
+                        <select id="hall" name="hall">
+                            <option value="">Select your hall</option>
+                            <option value="edcomplex" {% if profile.hall == 'edcomplex' %}selected{% endif %}>Ed Complex</option>
+                            <option value="tatton" {% if profile.hall == 'tatton' %}selected{% endif %}>Tatton</option>
+                            <option value="upschool" {% if profile.hall == 'upschool' %}selected{% endif %}>Upschool</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="offCampusGroup" style="display: none;">
+                        <label for="estate">Estate/Area</label>
+                        <select id="estate" name="estate">
+                            <option value="">Select your estate</option>
+                            <option value="gateA" {% if profile.estate == 'gateA' %}selected{% endif %}>Gate Area A</option>
+                            <option value="gateB" {% if profile.estate == 'gateB' %}selected{% endif %}>Gate Area B</option>
+                            <option value="njokerio" {% if profile.estate == 'njokerio' %}selected{% endif %}>Njokerio</option>
+                        </select>
+                    </div>
+
+                    <!-- Bible Study Information -->
+                    <div class="form-group">
+                        <label for="sessionsAttended">Bible Study Sessions Attended</label>
+                        <input type="number" id="sessionsAttended" name="sessionsAttended" min="0" value="3" required>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Profile picture upload
+        document.getElementById('uploadBtn').addEventListener('click', function() {
+            document.getElementById('profileUpload').click();
+        });
+
+        document.getElementById('profileUpload').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profilePicture').src = event.target.result;
+                    // image to server
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        // Residency type toggle
+        document.getElementById('residencyType').addEventListener('change', function() {
+            if (this.value === 'campus') {
+                document.getElementById('campusHallGroup').style.display = 'block';
+                document.getElementById('offCampusGroup').style.display = 'none';
+            } else {
+                document.getElementById('campusHallGroup').style.display = 'none';
+                document.getElementById('offCampusGroup').style.display = 'block';
+            }
+        });
+
+        // Initialize form based on current residency type
+        document.addEventListener('DOMContentLoaded', function() {
+            const residencyType = document.getElementById('residencyType').value;
+            if (residencyType === 'offCampus') {
+                document.getElementById('campusHallGroup').style.display = 'none';
+                document.getElementById('offCampusGroup').style.display = 'block';
+            }
+        });
+
+        // to add form handling here later
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
+                // Redirect to profile view or reset form
+                window.location.href = "{% url 'profile' %}";
+            }
+        });
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Profile updated successfully!');
+
+        });
+    </script>
+</main>
+{% endblock %}

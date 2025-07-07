@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Segoe UI, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { color: #3f9037; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #bbbbbb; }
+        .content { margin: 20px 0; }
+        .credentials { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+        .footer { margin-top: 20px; font-size: 0.9em; color: #969090;  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Welcome to EUNCCU Bible Study</h2>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ user.full_name }},</p>
+            <p>Thank you for registering with Egerton University Njoro Campus Christian Union for Bible Study,
+                let us study the bible together  .</p>
+            
+            <div class="credentials">
+                <h3>Your Login Details:</h3>
+                <p><strong>User ID:</strong> {{ user_id }}</p>
+                <p><strong>Password:</strong> {{ user_id }}</p>
+            </div>
+            
+            <p>You can login using either:</p>
+            <ul>
+                <li>Your Email: <strong>{{ user.email }}</strong> OR</li>
+                <li>Your Phone: <strong>{{ user.phone }}</strong></li>
+            </ul>
+            <p>with the User ID above as your password.</p>
+            
+            <p>Please keep these details secure and don't share them with anyone.
+                use them to login at <a href="{{ site_url }}">EUNCCU Bible Study</a>to 
+                see  other members of your bs group.</p> <!--site url badae-->
+        </div>
+        
+        <div class="footer">
+            <p>Blessings from,<br>EUNCCU Pastoral Committee</p>
+        </div>
+    </div>
+</body>
+</html>

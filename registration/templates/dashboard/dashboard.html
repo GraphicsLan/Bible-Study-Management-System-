@@ -1,0 +1,104 @@
+{% extends 'dashboard/base.html' %}
+{% load static%}
+{% block body %}
+<div class="dashboard-layout">
+    <main class="main-content">
+        <header class="main-header">
+            <h1>Welcome, <span id="userName">Ian Githinji</span></h1>
+            <div class="user-info">
+                <span class="user-id">Your User ID: EUCU23042</span>
+            </div>
+        </header>
+
+        <section id="dashboard" class="content-section active">
+            <div class="welcome-banner">
+                <div class="banner-content">
+                    <h2> Let's Study The Bible Together </h2>
+                    <h3>Small group inductive bible study</h3>
+                    <p>The bible study runs every semester guided by a study guide prayerfully
+                        choosen by the pastoral Committee. The study guide is available in 
+                        hardcopy at the business committee desk and online on the EUNCCU website.
+                    </p>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <!-- User Profile Section -->
+                <section class="profile-section">
+                    <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+                    <div class="profile-content">
+                        <div class="profile-pic"></div>
+                        <div class="profile-details">
+                            <div class="detail">
+                                <span class="label">Name:</span>
+                                <span class="value">Ian Githinji</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Year:</span>
+                                <span class="value">Year 3</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Group:</span>
+                                <span class="value">Group 12</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">Residency:</span>
+                                <span class="value">Within Campus</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Group Summary Section -->
+                <section class="group-summary">
+                    <h3><i class="fas fa-users"></i> Group Summary</h3>
+                    <div class="group-content">
+                        <div class="leader-info">
+                            <h4>Group Leader/Pastor</h4>
+                            <div class="leader-details">
+                                <div class="leader-text">
+                                    <p class="leader-name">Amon Kiprop</p>
+                                    <p><i class="fas fa-phone"></i> 0722123456</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="members-count">
+                            <a href="{% url 'mygroup' %}" class="view-all">View other members <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Current Study Section -->
+                <section class="study-section">
+                    <h3><i class="fas fa-bible"></i> This Semester Study</h3>
+                    <div class="study-content">
+                        <div class="study-details">
+                            <h4>The Book of Romans</h4>
+                            <p><i class="fas fa-calendar-alt"></i> Wednesday, 7:00 PM - 9:00 PM</p>
+                            <p><i class="fas fa-map-marker-alt"></i> Respective Venues </p>
+                            <div class="progress-container">
+                                <div class="progress-text">3 of 7 sessions completed</div>
+                                <div class="progress-bar" style="width: 30%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Weekly Reflection Section -->
+                <section class="reflection-section">
+                    <h3><i class="fas fa-praying-hands"></i> Our Weekly Reflection</h3>
+                    <div class="reflection-content">
+                        <h4>Romans 3:21-31</h4>
+                        <blockquote>
+                            "But now apart from the law the righteousness of God has been made known... This righteousness is given
+                            through faith in Jesus Christ to all who believe."
+                        </blockquote>
+                        <p>This week's reflection focuses on how we are justified by faith alone, not by works of the law. What
+                            does this mean for our daily walk with Christ?</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block body %}
+
+<main class="main-content">
+    <header class="main-header">
+        <h1>Group<span>12</span></h1>
+    </header>
+    <div class="welcome-banner">
+        <div class="banner-content">
+            <h2>Together in Christ, Our God Reigns</h2>
+            <h3>Meet Your Bible Study Fellowship</h3>
+            <p>Meet weekly to study God's Word, share insights, and grow together in faith.</p>
+        </div>
+    </div>
+
+    <div class="group-members-list">
+        <div class="group-header">
+            <h2 class="group-title"><i class="fas fa-users"></i> Group Members</h2>
+            <div class="group-meta">Meeting Every Wednesdays 7PM to 9 PM</div>
+        </div>
+        
+        <div class="member-list">
+            <!-- Group Leader -->
+            <div class="member-item leader" style="animation-delay: 0.1s">
+                <div class="member-avatar">AK</div>
+                <div class="member-info">
+                    <div class="member-name">Amon Kiprotich <span class="member-role">Pastor</span></div>
+                    <div class="member-position">Year 4 </div>
+                </div>
+                <div class="member-actions">
+                    <button class="btn-contact">
+                        <i class="fas fa-phone"></i> Contact Your Pastor
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Group Members -->
+            <div class="member-item" style="animation-delay: 0.2s">
+                <div class="member-avatar">SK</div>
+                <div class="member-info">
+                    <div class="member-name">Sarah Kiprop</div>
+                    <div class="member-position">Year 2 </div>
+                </div>
+                <div class="member-phone">
+                    <i class="fas fa-phone"></i> 0723123456
+                </div>
+            </div>
+            
+            <div class="member-item" style="animation-delay: 0.3s">
+                <div class="member-avatar">DM</div>
+                <div class="member-info">
+                    <div class="member-name">David Maina</div>
+                    <div class="member-position">Year 3 </div>
+                </div>
+                <div class="member-phone">
+                    <i class="fas fa-phone"></i> 0721345678
+                </div>
+            </div>
+            
+            <div class="member-item" style="animation-delay: 0.4s">
+                <div class="member-avatar">JM</div>
+                <div class="member-info">
+                    <div class="member-name">Joy Muthoni</div>
+                    <div class="member-position">Year 1 </div>
+                </div>
+                <div class="member-phone">
+                    <i class="fas fa-phone"></i> 0725567890
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Add staggered animation delays
+    document.addEventListener('DOMContentLoaded', function() {
+        const members = document.querySelectorAll('.member-item');
+        members.forEach((member, index) => {
+            member.style.animationDelay = `${0.1 + (index * 0.1)}s`;
+        });
+    });
+</script>
+
+{% endblock %}
