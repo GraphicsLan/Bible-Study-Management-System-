@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,8 +19,8 @@
             --white: #ffffff;
             --gray: #e0e0e0;
             --dark-gray: #95a5a6;
-            --shadow: 0 4px 16px rgba(44,142,34,0.10);
-            --transition: all 0.3s cubic-bezier(.4,0,.2,1);
+            --shadow: 0 4px 16px rgba(44, 142, 34, 0.10);
+            --transition: all 0.3s cubic-bezier(.4, 0, .2, 1);
         }
 
         * {
@@ -30,7 +31,7 @@
         }
 
         body {
-            background:linear-gradient(135deg, rgba(44, 142, 34, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
+            background: linear-gradient(135deg, rgba(44, 142, 34, 0.1) 0%, rgba(255, 255, 255, 1) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -49,8 +50,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-header {
@@ -162,13 +170,14 @@
             .login-container {
                 padding: 1.5rem;
             }
-            
+
             .login-header h1 {
                 font-size: 1.7rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-header">
@@ -180,12 +189,12 @@
             {% csrf_token %}
             <div class="input-group">
                 <label for="loginId">Email or Phone Number</label>
-                <input type="phone, email" id="loginId" name="loginId" placeholder="Enter your email or phone" required>
+                <input type="text" id="loginId" name="loginId" placeholder="Enter your email or phone" required>
             </div>
 
             <div class="input-group">
-                <label for="userId">User ID</label>
-                <input type="text" id="userId" name="userId" placeholder="Enter your user ID" required>
+                <label for="memberId">Member ID</label>
+                <input type="text" id="memberId" name="memberId" placeholder="Enter your member ID" required>
             </div>
 
             <div class="options">
@@ -193,7 +202,7 @@
                     <input type="checkbox" id="remember" name="remember">
                     <label for="remember">Remember me</label>
                 </div>
-                <a href="#" class="forgot-link">Forgot User ID?</a>
+                <a href="#" class="forgot-link">Forgot member ID?</a>
             </div>
 
             <button type="submit" class="btn-login">Login <i class="fas fa-sign-in-alt"></i></button>
@@ -204,11 +213,6 @@
         </form>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.location.href = '{% url "dashboard" %}';
-        });
-    </script>
 </body>
+
 </html>

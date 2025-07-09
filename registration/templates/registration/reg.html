@@ -1,14 +1,16 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EUNCCU Bible Study Registration</title>
     <link rel="stylesheet" href="{% static 'registration/css/reg.css' %}">
-    <link rel="icon" href="{% static 'registration/photos/Round logo 2.png' %}" >
+    <link rel="icon" href="{% static 'registration/photos/Round logo 2.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <div class="registration-container">
         <!-- Visual Section -->
@@ -58,26 +60,23 @@
                         </div>
                         <div class="step" data-step="2">
                             <div class="step-number">2</div>
-                            <div class="step-label">Residency type</div>
-                        </div>
-                        <div class="step" data-step="2">
-                            <div class="step-number">3</div>
-                            <div class="step-label">Estate/Hall</div>
+                            <div class="step-label">Residency</div>
                         </div>
                     </div>
                 </div>
 
                 <form id="registrationForm" method="POST" action="{% url 'register' %}">
-                   {% csrf_token %}
+                    {% csrf_token %}
                     <!-- Personal Details Section -->
                     <section id="personalDetails" class="form-step active">
                         <div class="input-group">
                             <label for="fullName">
                                 <i class="fas fa-user"></i> Full Name
                             </label>
-                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name"
+                                required>
                         </div>
-                        
+
                         <div class="input-row">
                             <div class="input-group">
                                 <label for="phone">
@@ -85,7 +84,7 @@
                                 </label>
                                 <input type="tel" id="phone" name="phone" placeholder="eg 0725023365" required>
                             </div>
-                            
+
                             <div class="input-group">
                                 <label for="email">
                                     <i class="fas fa-envelope"></i> Email
@@ -110,10 +109,9 @@
                                         <span class="radio-custom"></span>
                                         Female
                                     </label>
-
                                 </div>
                             </div>
-                            
+
                             <div class="input-group">
                                 <label for="yearOfStudy">
                                     <i class="fas fa-graduation-cap"></i> Year of Study
@@ -132,9 +130,11 @@
 
                         <div class="input-group">
                             <label for="sessionsAttended">
-                                <i class="fas fa-calendar-check"></i>Number of Bible Study Sessions you have Attended before.
+                                <i class="fas fa-calendar-check"></i>Number of Bible Study Sessions you have Attended
+                                before.
                             </label>
-                            <input type="number" id="sessionsAttended" name="sessionsAttended" min="0" placeholder="Input Number eg 1, 2 ,3" required>
+                            <input type="number" id="sessionsAttended" name="sessionsAttended" min="0"
+                                placeholder="Input Number eg 1, 2 ,3" required>
                         </div>
 
                         <div class="input-group">
@@ -179,8 +179,8 @@
                         </div>
                     </section>
 
-                    <!-- Residency Type Section -->
-                    <section id="residencyTypeSection" class="form-step">
+                    <!-- Residency Information Section -->
+                    <section id="residencyInfoSection" class="form-step">
                         <div class="input-group">
                             <label>
                                 <i class="fas fa-home"></i> Residency Type
@@ -204,89 +204,60 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="form-actions">
-                            <button type="button" id="residencyTypeBackBtn" class="btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                            <button type="button" id="residencyTypeNextBtn" class="btn-primary" disabled>
-                                Next <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </section>
 
-                    <!-- Campus Halls Section -->
-                    <section id="campusResidencySection" class="form-step">
-                        <div class="input-group">
-                            <label for="hall">
-                                <i class="fas fa-building"></i> Select Hall
-                            </label>
-                            <select id="hall" name="hall">
-                                <option value="">Select your hall</option>
-                                <option value="edcomplex">Ed Complex (Buruburu,Riverview,Riverside & Thorton)</option>
-                                <option value="tatton">Tatton (Mombasa,Argentina,Eldoret & Nairobi)</option>
-                                <option value="upschool A1">Upschool A (Maringo & Ruwenzori)</option>
-                                <option value="upschool A2">Upschool B (All cbd hostels,Mama Ngina,Taifa,Barret,Uganda & Oldhall)</option>
-                            </select>
-                        </div>
-                        <div class="input-group consent-group">
-                            <label class="consent-checkbox">
-                                <input type="checkbox" id="consentCheckbox" required>
-                                <span class="checkbox-custom"></span>
-                                I agree to the <a href="#">Data Processing Consent Agreement</a>
-                            </label>
-                            <p class="consent-text">
-                                By registering, you consent to the Egerton University Njoro Campus Christian Union 
-                                collecting and processing your personal data for Bible study management and communication purposes.
-                            </p>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" id="campusResidencyBackBtn" class="btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                            <button type="submit" class="btn-primary">
-                                Complete Registration <i class="fas fa-check"></i>
-                            </button>
-                        </div>
-                    </section>
-
-                    <!-- Off-Campus Estates Section -->
-                    <section id="offCampusResidencySection" class="form-step">
-                        <div class="input-row">
+                        <!-- Campus Halls -->
+                        <div id="campusResidencyFields" class="residency-option">
                             <div class="input-group">
-                                <label for="area">
-                                    <i class="fas fa-map-marker-alt"></i> Area
+                                <label for="hall">
+                                    <i class="fas fa-building"></i> Select Hall
                                 </label>
-                                <select id="area" name="area">
-                                    <option value="">Select area</option>
-                                    <option value="Gate A">Gate Area A</option>
-                                    <option value="Gate B">Gate Area B</option>
-                                    <option value="Njokerio A">Njokerio Area A</option>
-                                    <option value="Njokerio B">Njokerio Area B</option>
-                                    <option value="Ahero">Ahero</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label for="estate">
-                                    <i class="fas fa-map-pin"></i> Estate
-                                </label>
-                                <select id="estate" name="estate" disabled>
-                                    <option value="">Select area first</option>
+                                <select id="hall" name="hall">
+                                    <option value="">Select your hall</option>
+                                    <option value="edcomplex">Ed Complex (Buruburu,Riverview,Riverside & Thorton)</option>
+                                    <option value="tatton">Tatton (Mombasa,Argentina,Eldoret & Nairobi)</option>
+                                    <option value="upschool A1">Upschool A (Maringo & Ruwenzori)</option>
+                                    <option value="upschool A2">Upschool B (All cbd hostels,Mama Ngina,Taifa,Barret,Uganda &
+                                        Oldhall)</option>
                                 </select>
                             </div>
                         </div>
+
+                        <!-- Off-Campus Estates -->
+                        <div id="offCampusResidencyFields" class="residency-option">
+                            <div class="input-row">
+                                <div class="input-group">
+                                    <label for="area">
+                                        <i class="fas fa-map-marker-alt"></i> Area
+                                    </label>
+                                    <select id="area" name="area">
+                                        <option value="">Select area</option>
+                                        <option value="Gate A">Gate Area A</option>
+                                        <option value="Gate B">Gate Area B</option>
+                                        <option value="Njokerio A">Njokerio Area A</option>
+                                        <option value="Njokerio B">Njokerio Area B</option>
+                                        <option value="Ahero">Ahero</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="estate">
+                                        <i class="fas fa-map-pin"></i> Estate
+                                    </label>
+                                    <select id="estate" name="estate" disabled>
+                                        <option value="">Select area first</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="input-group consent-group">
-                            <label class="consent-checkbox">
-                                <input type="checkbox" id="consentCheckbox" required>
-                                <span class="checkbox-custom"></span>
-                                I agree to the <a href="#">Data Processing Consent Agreement</a>
-                            </label>
                             <p class="consent-text">
-                                By registering, you consent to the Egerton University Njoro Campus Christian Union 
-                                collecting and processing your personal data for Bible study management and communication purposes.
+                                By registering, you consent to the Egerton University Njoro Campus Christian Union
+                                collecting and processing your personal data for Bible study management and
+                                communication purposes. <a href="#">Please read the consent agreement </a>
                             </p>
                         </div>
                         <div class="form-actions">
-                            <button type="button" id="offCampusResidencyBackBtn" class="btn-secondary">
+                            <button type="button" id="residencyBackBtn" class="btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Back
                             </button>
                             <button type="submit" class="btn-primary">
@@ -299,35 +270,47 @@
         </div>
     </div>
 
-  <!-- Success Modal -->
+    <!-- Success Modal -->
     <div id="successModal" class="modal">
-    <div class="modal-content">
-        <i class="fas fa-check-circle success-icon"></i>
-        <h2>Registration Successful!</h2>
-        <p>Your account has been created successfully.</p>
-        
-        <div class="user-id-display">
-            <span>Your User ID:</span>
-            <strong id="generatedUserId"></strong>
+        <div class="modal-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>Registration Successful!</h2>
+            <p>Your member account has been created successfully.</p>
+
+            <div class="user-id-display">
+                <span>"memberId"</span>
+                <strong id="generatedMemberId"></strong>
+            </div>
+
+            <p>Login details have been sent to your email.</p>
+
+            <div class="countdown">
+                <p>Redirecting to login in <span id="countdown">5</span> seconds...</p>
+            </div>
+
+            <button id="loginRedirect" class="btn-primary">
+                Go to Login Now <i class="fas fa-arrow-right"></i>
+            </button>
         </div>
-        
-        <p>We have sent your login details to your email address.</p>
-        
-        <div class="important-note">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>Please check your email for login instructions.</span>
-        </div>
-        
-        <p>You will be redirected to login page in 5 seconds...</p>
-        
-        <button id="loginRedirect" class="btn-primary">
-            Go to Login Now <i class="fas fa-arrow-right"></i>
-        </button>
     </div>
-    </div>
-    <script>
-    var loginUrl = "{% url 'login' %}";
-    </script>
-    <script src="{% static 'registration/js/script.js' %}"></script>
+
 </body>
+<script src="{% static 'registration/js/script.js' %}"></script>
+
+<script>
+    // Countdown timer
+    function startCountdown(seconds, elementId, callback) {
+        let counter = seconds;
+        const element = document.getElementById(elementId);
+        const interval = setInterval(() => {
+            counter--;
+            element.textContent = counter;
+            if (counter <= 0) {
+                clearInterval(interval);
+                callback();
+            }
+        }, 1000);
+    }
+</script>
+
 </html>

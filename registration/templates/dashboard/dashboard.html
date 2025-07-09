@@ -4,9 +4,9 @@
 <div class="dashboard-layout">
     <main class="main-content">
         <header class="main-header">
-            <h1>Welcome, <span id="userName">Ian Githinji</span></h1>
+            <h1>Welcome, <span id="userName">{{ request.user.get_full_name }}</span></h1>
             <div class="user-info">
-                <span class="user-id">Your User ID: EUCU23042</span>
+                <span class="user-id">Member ID: <span id="memberId">{{ request.user.member_id }}</span></span>
             </div>
         </header>
 
@@ -16,14 +16,13 @@
                     <h2> Let's Study The Bible Together </h2>
                     <h3>Small group inductive bible study</h3>
                     <p>The bible study runs every semester guided by a study guide prayerfully
-                        choosen by the pastoral Committee. The study guide is available in 
+                        choosen by the pastoral Committee. The study guide is available in
                         hardcopy at the business committee desk and online on the EUNCCU website.
                     </p>
                 </div>
             </div>
 
             <div class="dashboard-content">
-                <!-- User Profile Section -->
                 <section class="profile-section">
                     <h3><i class="fas fa-user-circle"></i> My Profile</h3>
                     <div class="profile-content">
@@ -31,19 +30,29 @@
                         <div class="profile-details">
                             <div class="detail">
                                 <span class="label">Name:</span>
-                                <span class="value">Ian Githinji</span>
+                                <span class="value">{{ request.user.get_full_name }}</span>
                             </div>
                             <div class="detail">
                                 <span class="label">Year:</span>
-                                <span class="value">Year 3</span>
+                                <span class="value">{{ request.user.year_of_study|default:"Not specified" }}</span>
                             </div>
                             <div class="detail">
                                 <span class="label">Group:</span>
-                                <span class="value">Group 12</span>
+                                <span class="value">
+                                    {% if request.user.group %}
+                                    {{ request.user.group.name }}
+                                    {% else %}
+                                    Not assigned
+                                    {% endif %}
+                                </span>
                             </div>
                             <div class="detail">
                                 <span class="label">Residency:</span>
-                                <span class="value">Within Campus</span>
+                                <span class="value">{{ request.user.get_residency_type_display }}</span>
+                            </div>
+                            <div class="detail">
+                                <span class="label">phone:</span>
+                                <span class="value">{{ request.user.phone }}</span>
                             </div>
                         </div>
                     </div>
@@ -57,30 +66,77 @@
                             <h4>Group Leader/Pastor</h4>
                             <div class="leader-details">
                                 <div class="leader-text">
-                                    <p class="leader-name">Amon Kiprop</p>
+                                    <p class="leader-name">hian ian </p>
                                     <p><i class="fas fa-phone"></i> 0722123456</p>
                                 </div>
                             </div>
                         </div>
                         <div class="members-count">
-                            <a href="{% url 'mygroup' %}" class="view-all">View other members <i class="fas fa-arrow-right"></i></a>
+                            <a href="{% url 'mygroup' %}" class="view-all">View other members <i
+                                    class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </section>
 
                 <!-- Current Study Section -->
                 <section class="study-section">
-                    <h3><i class="fas fa-bible"></i> This Semester Study</h3>
+                    <h3><i class="fas fa-bible"></i> This Semester BS Study</h3>
                     <div class="study-content">
+                        {% if current_study %}
                         <div class="study-details">
-                            <h4>The Book of Romans</h4>
-                            <p><i class="fas fa-calendar-alt"></i> Wednesday, 7:00 PM - 9:00 PM</p>
-                            <p><i class="fas fa-map-marker-alt"></i> Respective Venues </p>
-                            <div class="progress-container">
-                                <div class="progress-text">3 of 7 sessions completed</div>
-                                <div class="progress-bar" style="width: 30%;"></div>
+                            <div class="study-item">
+                                <span class="study-label">Title:</span>
+                                <span class="study-value">{{ current_study.title }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Book:</span>
+                                <span class="study-value">{{ current_study.book }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Total Sessions:</span>
+                                <span class="study-value">{{ current_study.total_sessions }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Meeting Day:</span>
+                                <span class="study-value">{{ current_study.meeting_day }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Meeting Time:</span>
+                                <span class="study-value">{{ current_study.meeting_time }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Meeting Venue:</span>
+                                <span class="study-value">{{ current_study.meeting_venue }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">Start Date:</span>
+                                <span class="study-value">{{ current_study.start_date|date:"F j, Y" }}</span>
+                            </div>
+
+                            <div class="study-item">
+                                <span class="study-label">End Date:</span>
+                                <span class="study-value">{{ current_study.end_date|date:"F j, Y" }}</span>
+                            </div>
+
+                            <div class="study-progress">
+                                <div class="progress-text">{{ current_study.current_session }} of 
+                                    {{ current_study.total_sessions }} sessions completed</div>
+                                <div class="progress-container">
+                                    <div class="progress-bar"
+                                        style="width: {% widthratio current_study.current_session current_study.total_sessions 100 %}%;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        {% else %}
+                        <p class="no-study">No current study assigned</p>
+                        {% endif %}
                     </div>
                 </section>
 
@@ -88,13 +144,19 @@
                 <section class="reflection-section">
                     <h3><i class="fas fa-praying-hands"></i> Our Weekly Reflection</h3>
                     <div class="reflection-content">
-                        <h4>Romans 3:21-31</h4>
-                        <blockquote>
-                            "But now apart from the law the righteousness of God has been made known... This righteousness is given
-                            through faith in Jesus Christ to all who believe."
-                        </blockquote>
-                        <p>This week's reflection focuses on how we are justified by faith alone, not by works of the law. What
-                            does this mean for our daily walk with Christ?</p>
+                        {% if latest_reflection %}
+                        <h4>{{ latest_reflection.scripture_reference }}</h4>
+                        <blockquote>{{ latest_reflection.scripture_text }}</blockquote>
+                        <p>{{ latest_reflection.reflection_text }}</p>
+                        {% if latest_reflection.discussion_question %}
+                        <div class="discussion-question">
+                            <strong>Discussion Question:</strong>
+                            <p>{{ latest_reflection.discussion_question }}</p>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <p>No reflection available for this week</p>
+                        {% endif %}
                     </div>
                 </section>
             </div>

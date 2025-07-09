@@ -389,49 +389,13 @@ select {
     padding-top: 1.5rem;
     border-top: 1px solid var(--gray);
 }
-.consent-checkbox {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-    position: relative;
-}
-.consent-checkbox input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-}
-.checkbox-custom {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--gray);
-    border-radius: 4px;
-    display: inline-block;
-    position: relative;
-    transition: var(--transition);
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-.consent-checkbox input:checked ~ .checkbox-custom {
-    border-color: var(--primary);
-    background-color: var(--primary);
-}
-.consent-checkbox input:checked ~ .checkbox-custom::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    position: absolute;
-    color: var(--white);
-    font-size: 0.7rem;
-    top: 2px;
-    left: 3px;
-}
-.consent-checkbox a {
+
+
+.consent-group a {
     color: var(--primary);
     text-decoration: none;
 }
-.consent-checkbox a:hover {
+.consent-group a:hover {
     text-decoration: underline;
 }
 .consent-text {
@@ -508,86 +472,112 @@ select {
 
 /* Success Modal */
 
-/* Modal Animation */
 @keyframes modalFadeIn {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /* Modal Content */
-.modal-content {
-    background-color: var(--white);
-    padding: 2.5rem;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 92%;
-    text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
-    animation: modalFadeIn 0.5s ease;
-}
 .modal {
-    display: none; /* Hidden by default */
     position: fixed;
-    top: 100px; left: 0; right: 0; bottom: 100px;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
     align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
 }
+
 .modal-content {
     background-color: var(--white);
     padding: 2.5rem;
     border-radius: 12px;
     max-width: 500px;
-    width: 92%;
+    width: 90%;
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
-    animation: modalFadeIn 0.3s ease;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
 }
-@keyframes modalFadeIn {
-    from { opacity: 0; transform: translateY(-20px);}
-    to { opacity: 1; transform: translateY(0);}
-}
+
 .success-icon {
-    font-size: 3.5rem;
+    font-size: 4rem;
     color: var(--primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    animation: bounce 0.6s;
 }
+
 .modal h2 {
     color: var(--primary);
     margin-bottom: 1rem;
+    font-size: 1.8rem;
 }
+
 .modal p {
-    margin-bottom: 1.5rem;
     color: var(--dark);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
 }
+
 .user-id-display {
-    background-color: var(--light);
-    padding: 1rem;
-    border-radius: 6px;
+    background-color: #f8f9fa;
+    padding: 1.2rem;
+    border-radius: 8px;
     margin: 1.5rem 0;
+    border: 2px dashed var(--primary-light);
 }
+
 .user-id-display span {
     display: block;
     font-size: 0.9rem;
     color: var(--dark-gray);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
+
 .user-id-display strong {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     color: var(--primary);
     letter-spacing: 1px;
 }
-.important-note {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--dark);
+
+.countdown {
     margin: 1.5rem 0;
+    font-size: 1rem;
+    color: var(--dark);
 }
-.important-note i {
-    color: var(--accent);
+
+.countdown span {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.btn-primary {
+    margin-top: 1rem;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-15px);}
+    60% {transform: translateY(-7px);}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* Residency Options */
+.residency-option {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: var(--light);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary);
+}
+.residency-option.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
 }

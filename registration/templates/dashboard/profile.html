@@ -116,6 +116,9 @@
 
         .profile-info {
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @media (min-width: 768px) {
@@ -125,10 +128,10 @@
         }
 
         .profile-name {
-            font-size: 1.75rem;
+            font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            color: var(--dark);
+            color: var(--primary);
         }
 
         .profile-id {
@@ -138,7 +141,7 @@
             font-size: 1.1rem;
         }
 
-        .profile-role {
+        .profile-year {
             display: inline-block;
             padding: 0.4rem 1rem;
             background: rgba(44, 142, 34, 0.1);
@@ -295,9 +298,11 @@
                 </div>
                 
                 <div class="profile-info">
-                    <h2 class="profile-name" id="profileName">Ian Githinji</h2>
-                    <div class="profile-id">User ID: EUNCCU23042</div>
-                    <span class="profile-role">Registered Member</span>
+                                <span class="profile-name">Name:</span>
+                                <span class="value">{{ request.user.get_full_name }}</span>
+                                <span class="profile-id">Member ID: <span id="memberId">{{ request.user.member_id }}</span></span>
+                                <span class="profile-year">Year:</span>
+                                <span class="value">{{ request.user.year_of_study|default:"Not specified" }}</span>
                 </div>
             </section>
 
