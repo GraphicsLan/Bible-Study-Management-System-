@@ -11,6 +11,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    {% if messages %}
+    <div class="django-messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     {% if user.is_authenticated %}
     <div class="dashboard-container">
         <!-- Sidebar Navigation - Desktop -->
@@ -46,7 +55,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'profile' %}">
+                        <a href="{% url 'members_profile:profile' %}">
                             <i class="fas fa-user"></i>
                             <span>My Profile</span>
                         </a>
@@ -67,10 +76,10 @@
 
         {% else %}
              <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login.html' %}">Login</a>
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
             </li>
              <li class="nav-item">
-                                <a class="nav-link" href="{% url 'reg.html' %}">Register</a>
+                                <a class="nav-link" href="{% url 'register' %}">Register</a>
              </li>
         {% endif %}
 

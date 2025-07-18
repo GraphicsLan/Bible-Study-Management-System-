@@ -1,75 +1,199 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block body %}
-
+<style>
+    .no-group-message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+        text-align: center;
+    }
+    
+    .message-content {
+        max-width: 500px;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px dashed #dee2e6;
+    }
+    
+    .message-content i {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+    
+    .message-content h2 {
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+    
+    .message-content p {
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+    
+    .contact-info {
+        background: white;
+        padding: 1rem;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .contact-info p {
+        margin: 0.5rem 0;
+    }
+    
+    .leader-badge {
+        background: #ffc107;
+        color: #212529;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .group-meta span {
+        margin-right: 1rem;
+        color: #6c757d;
+    }
+</style>
 <main class="main-content">
-    <header class="main-header">
-        <h1>Group<span>12</span></h1>
-    </header>
-    <div class="welcome-banner">
-        <div class="banner-content">
-            <h2>Together in Christ, Our God Reigns</h2>
-            <h3>Meet Your Bible Study Fellowship</h3>
-            <p>Meet weekly to study God's Word, share insights, and grow together in faith.</p>
-        </div>
-    </div>
-
-    <div class="group-members-list">
-        <div class="group-header">
-            <h2 class="group-title"><i class="fas fa-users"></i> Group Members</h2>
-            <div class="group-meta">Meeting Every Wednesdays 7PM to 9 PM</div>
-        </div>
+    {% with user=request.user %}
+    {% if user.leader_now and user.led_groups.first %}
+        {% with group=user.led_groups.first %}
+        <header class="main-header">
+            <h1>{{ group.name }}</h1>
+        </header>
         
-        <div class="member-list">
-            <!-- Group Leader -->
-            <div class="member-item leader" style="animation-delay: 0.1s">
-                <div class="member-avatar">AK</div>
-                <div class="member-info">
-                    <div class="member-name">Amon Kiprotich <span class="member-role">Pastor</span></div>
-                    <div class="member-position">Year 4 </div>
-                </div>
-                <div class="member-actions">
-                    <button class="btn-contact">
-                        <i class="fas fa-phone"></i> Contact Your Pastor
-                    </button>
+        <div class="welcome-banner">
+            <div class="banner-content">
+                <h2>Together in Christ, Our God Reigns</h2>
+                <h3>Meet Your Bible Study Fellowship</h3>
+                <p>Meet weekly to study God's Word, share insights, and grow together in faith.</p>
+            </div>
+        </div>
+
+        <div class="group-members-list">
+            <div class="group-header">
+                <h2 class="group-title"><i class="fas fa-users"></i> Group Members</h2>
+                <div class="group-meta">
+                    <span><i class="fas fa-users"></i> {{ group.get_member_count }} Members</span>
+                    <span class="leader-badge"><i class="fas fa-crown"></i> You are the Leader</span>
                 </div>
             </div>
             
-            <!-- Group Members -->
-            <div class="member-item" style="animation-delay: 0.2s">
-                <div class="member-avatar">SK</div>
-                <div class="member-info">
-                    <div class="member-name">Sarah Kiprop</div>
-                    <div class="member-position">Year 2 </div>
+            <div class="member-list">
+                <!-- Group Leader (You) -->
+                <div class="member-item leader" style="animation-delay: 0.1s">
+                    <div class="member-avatar">{{ user.first_name|first }}{{ user.last_name|first }}</div>
+                    <div class="member-info">
+                        <div class="member-name">{{ user.get_full_name }} <span class="member-role">Pastor</span></div>
+                        <div class="member-position">Year {{ user.year_of_study|default:"N/A" }}</div>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-contact">
+                            <i class="fas fa-phone"></i> {{ user.phone }}
+                        </button>
+                    </div>
                 </div>
-                <div class="member-phone">
-                    <i class="fas fa-phone"></i> 0723123456
+                
+                <!-- Group Members -->
+                {% for group_member in group.members.all %}
+                {% if group_member.member != user %}
+                <div class="member-item" style="animation-delay: {% widthratio forloop.counter0 1 0.1 %}s">
+                    <div class="member-avatar">{{ group_member.member.first_name|first }}{{ group_member.member.last_name|first }}</div>
+                    <div class="member-info">
+                        <div class="member-name">{{ group_member.member.get_full_name }}</div>
+                        <div class="member-position">Year {{ group_member.member.year_of_study|default:"N/A" }}</div>
+                    </div>
+                    <div class="member-phone">
+                        <i class="fas fa-phone"></i> {{ group_member.member.phone }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endwith %}
+    {% elif user.group_memberships.first %}
+        {% with group=user.group_memberships.first.group %}
+        <header class="main-header">
+            <h1>{{ group.name }}</h1>
+        </header>
+        
+        <div class="welcome-banner">
+            <div class="banner-content">
+                <h2>Together in Christ, Our God Reigns</h2>
+                <h3>Meet Your Bible Study Fellowship</h3>
+                <p>Meet weekly to study God's Word, share insights, and grow together in faith.</p>
+            </div>
+        </div>
+
+        <div class="group-members-list">
+            <div class="group-header">
+                <h2 class="group-title"><i class="fas fa-users"></i> Group Members</h2>
+                <div class="group-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> {{ group.get_location_display }}</span>
+                    <span><i class="fas fa-users"></i> {{ group.get_member_count }} Members</span>
                 </div>
             </div>
             
-            <div class="member-item" style="animation-delay: 0.3s">
-                <div class="member-avatar">DM</div>
-                <div class="member-info">
-                    <div class="member-name">David Maina</div>
-                    <div class="member-position">Year 3 </div>
+            <div class="member-list">
+                {% if group.leader %}
+                <!-- Group Leader -->
+                <div class="member-item leader" style="animation-delay: 0.1s">
+                    <div class="member-avatar">{{ group.leader.first_name|first }}{{ group.leader.last_name|first }}</div>
+                    <div class="member-info">
+                        <div class="member-name">{{ group.leader.get_full_name }} <span class="member-role">Pastor</span></div>
+                        <div class="member-position">Year {{ group.leader.year_of_study|default:"N/A" }}</div>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-contact">
+                            <i class="fas fa-phone"></i> {{ group.leader.phone }}
+                        </button>
+                    </div>
                 </div>
-                <div class="member-phone">
-                    <i class="fas fa-phone"></i> 0721345678
+                {% endif %}
+                
+                <!-- Group Members -->
+                {% for group_member in group.members.all %}
+                {% if group_member.member != group.leader %}
+                <div class="member-item" style="animation-delay: {% widthratio forloop.counter0 1 0.1 %}s">
+                    <div class="member-avatar">{{ group_member.member.first_name|first }}{{ group_member.member.last_name|first }}</div>
+                    <div class="member-info">
+                        <div class="member-name">{{ group_member.member.get_full_name }}</div>
+                        <div class="member-position">Year {{ group_member.member.year_of_study|default:"N/A" }}</div>
+                    </div>
+                    <div class="member-phone">
+                        <i class="fas fa-phone"></i> {{ group_member.member.phone }}
+                    </div>
                 </div>
+                {% endif %}
+                {% endfor %}
             </div>
-            
-            <div class="member-item" style="animation-delay: 0.4s">
-                <div class="member-avatar">JM</div>
-                <div class="member-info">
-                    <div class="member-name">Joy Muthoni</div>
-                    <div class="member-position">Year 1 </div>
-                </div>
-                <div class="member-phone">
-                    <i class="fas fa-phone"></i> 0725567890
+        </div>
+        {% endwith %}
+    {% else %}
+        <header class="main-header">
+            <h1>My Group</h1>
+        </header>
+        
+        <div class="no-group-message">
+            <div class="message-content">
+                <i class="fas fa-users-slash"></i>
+                <h2>No Group Assigned Yet</h2>
+                <p>You haven't been assigned to a Bible Study group yet. This usually happens automatically after registration, but if you've been waiting, please contact the admin.</p>
+                <div class="contact-info">
+                    <p><strong>Contact Admin:</strong></p>
+                    <p><i class="fas fa-envelope"></i> eunccu001@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +254725 0233 65</p>
                 </div>
             </div>
         </div>
-    </div>
+    {% endif %}
+    {% endwith %}
 </main>
 
 <script>
@@ -81,5 +205,7 @@
         });
     });
 </script>
+
+
 
 {% endblock %}

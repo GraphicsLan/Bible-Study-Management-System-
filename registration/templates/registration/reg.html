@@ -9,6 +9,52 @@
     <link rel="stylesheet" href="{% static 'registration/css/reg.css' %}">
     <link rel="icon" href="{% static 'registration/photos/Round logo 2.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-steps/1.10.0/jquery.steps.min.js"></script>
+    <style>
+        .django-messages {
+            margin-bottom: 1.5em;
+        }
+        .alert {
+            padding: 1em 1.5em;
+            border-radius: 6px;
+            margin-bottom: 1em;
+            font-size: 1.05em;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(44, 142, 34, 0.07);
+            display: flex;
+            align-items: center;
+            gap: 0.7em;
+            border-left: 6px solid #3f9037;
+            background: #f8fff7;
+            color: #256029;
+            transition: background 0.3s;
+        }
+        .alert-success {
+            border-left-color: #3f9037;
+            background: #e8fbe8;
+            color: #256029;
+        }
+        .alert-error, .alert-danger {
+            border-left-color: #e74c3c;
+            background: #fff0f0;
+            color: #a94442;
+        }
+        .alert-info {
+            border-left-color: #3498db;
+            background: #eaf6fb;
+            color: #2176bd;
+        }
+        .alert-warning {
+            border-left-color: #f39c12;
+            background: #fffbe6;
+            color: #b8860b;
+        }
+        .alert i {
+            font-size: 1.2em;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,6 +96,19 @@
         <!-- Form Section -->
         <div class="form-section">
             <div class="form-container">
+                {% if messages %}
+                <div class="django-messages">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {% if message.tags == 'success' %}<i class="fas fa-check-circle"></i>{% endif %}
+                            {% if message.tags == 'error' or message.tags == 'danger' %}<i class="fas fa-times-circle"></i>{% endif %}
+                            {% if message.tags == 'info' %}<i class="fas fa-info-circle"></i>{% endif %}
+                            {% if message.tags == 'warning' %}<i class="fas fa-exclamation-triangle"></i>{% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 <div class="form-header">
                     <h1>Egerton University Njoro Campus<br> Christian Union</h1>
                     <h2>Bible Study Registration </h2>
@@ -267,30 +326,6 @@
                     </section>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Success Modal -->
-    <div id="successModal" class="modal">
-        <div class="modal-content">
-            <i class="fas fa-check-circle success-icon"></i>
-            <h2>Registration Successful!</h2>
-            <p>Your member account has been created successfully.</p>
-
-            <div class="user-id-display">
-                <span>"memberId"</span>
-                <strong id="generatedMemberId"></strong>
-            </div>
-
-            <p>Login details have been sent to your email.</p>
-
-            <div class="countdown">
-                <p>Redirecting to login in <span id="countdown">5</span> seconds...</p>
-            </div>
-
-            <button id="loginRedirect" class="btn-primary">
-                Go to Login Now <i class="fas fa-arrow-right"></i>
-            </button>
         </div>
     </div>
 

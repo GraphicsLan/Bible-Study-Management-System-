@@ -3,7 +3,7 @@
 {% block body %}
 <main class="main-content">
     <style>
-        /* Profile Specific Styles */
+        /* Profile Edit Specific Styles */
         .profile-container {
             max-width: 1200px;
             margin: 2rem auto;
@@ -62,56 +62,26 @@
             }
         }
 
-        .profile-pic-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin-bottom: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 768px) {
-            .profile-pic-container {
-                margin-right: 2.5rem;
-                margin-bottom: 0;
-            }
-        }
-
-        .profile-pic {
-            width: 100%;
-            height: 100%;
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--primary-light);
-            box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .profile-pic:hover {
-            transform: scale(1.03);
-        }
-
-        .upload-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2);
         }
 
-        .upload-btn:hover {
-            background: var(--primary-light);
-            transform: scale(1.1);
+        @media (min-width: 768px) {
+            .profile-avatar {
+                margin-right: 2.5rem;
+                margin-bottom: 0;
+            }
         }
 
         .profile-info {
@@ -266,75 +236,91 @@
         }
 
         @media (max-width: 480px) {
+            .main-content, .profile-container {
+                width: 100vw;
+                min-width: 0;
+                padding-left: 4vw;
+                padding-right: 4vw;
+            }
+            body {
+                overflow-x: hidden;
+            }
             .profile-header h1 {
-                font-size: 1.7rem;
+                font-size: 1.4rem;
             }
-            
-            .profile-pic-container {
-                width: 120px;
-                height: 120px;
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
             }
-            
             .profile-name {
-                font-size: 1.5rem;
+                font-size: 1.1rem;
+            }
+            .profile-card {
+                border-radius: 6px;
+                box-shadow: 0 2px 6px rgba(44, 142, 34, 0.10);
             }
         }
     </style>
 
     <div class="profile-container">
         <header class="profile-header">
-            <h1>My Profile</h1>
+            <h1>Edit Profile</h1>
             <p>Update your registration details below</p>
         </header>
 
         <div class="profile-card">
             <section class="profile-top">
-                <div class="profile-pic-container">
-                    <img src="{% static 'registration/photos/default-profile.jpg' %}" alt="Profile Picture" class="profile-pic" id="profilePicture">
-                    <button class="upload-btn" id="uploadBtn">
-                        <i class="fas fa-camera"></i>
-                    </button>
-                    <input type="file" id="profileUpload" accept="image/*" style="display: none;">
+                <div class="profile-avatar">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                 </div>
                 
                 <div class="profile-info">
-                                <span class="profile-name">Name:</span>
-                                <span class="value">{{ request.user.get_full_name }}</span>
-                                <span class="profile-id">Member ID: <span id="memberId">{{ request.user.member_id }}</span></span>
-                                <span class="profile-year">Year:</span>
-                                <span class="value">{{ request.user.year_of_study|default:"Not specified" }}</span>
+                    <div class="profile-name">{{ user.get_full_name }}</div>
+                    <div class="profile-id">Member ID: {{ user.member_id }}</div>
+                    <div class="profile-year">Year {{ user.year_of_study|default:"Not specified" }}</div>
                 </div>
             </section>
 
             <!-- Profile Form Section -->
             <section class="profile-form-section">
-                <form class="profile-form" id="profileForm" method="POST" action="{% url 'update_profile' %}">
+                <form class="profile-form" id="profileForm" method="POST" action="{% url 'members_profile:profile' %}">
                     {% csrf_token %}
                     <!-- Personal Information -->
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" name="fullName" value="Ian Githinji" required>
+                        <input type="text" id="fullName" name="fullName" value="{{ user.get_full_name }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Update Your Email</label>
-                        <input type="email" id="email" name="email" value="ian@example.com" required>
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Update Your Phone Number</label>
-                        <input type="tel" id="phone" name="phone" value="0725023365" required>
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" value="{{ user.phone|default:'' }}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="yearOfStudy">Update Your Year of Study</label>
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select gender</option>
+                            <option value="M" {% if user.gender == 'M' %}selected{% endif %}>Male</option>
+                            <option value="F" {% if user.gender == 'F' %}selected{% endif %}>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearOfStudy">Year of Study</label>
                         <select id="yearOfStudy" name="yearOfStudy" required>
-                            <option value="1" {% if profile.year_of_study == 1 %}selected{% endif %}>Year 1</option>
-                            <option value="2" {% if profile.year_of_study == 2 %}selected{% endif %}>Year 2</option>
-                            <option value="3" {% if profile.year_of_study == 3 %}selected{% endif %}>Year 3</option>
-                            <option value="4" {% if profile.year_of_study == 4 %}selected{% endif %}>Year 4</option>
-                            <option value="5" {% if profile.year_of_study == 5 %}selected{% endif %}>Year 5</option>
-                            <option value="6" {% if profile.year_of_study == 6 %}selected{% endif %}>Year 6</option>
+                            <option value="">Select year</option>
+                            <option value="1" {% if user.year_of_study == 1 %}selected{% endif %}>Year 1</option>
+                            <option value="2" {% if user.year_of_study == 2 %}selected{% endif %}>Year 2</option>
+                            <option value="3" {% if user.year_of_study == 3 %}selected{% endif %}>Year 3</option>
+                            <option value="4" {% if user.year_of_study == 4 %}selected{% endif %}>Year 4</option>
+                            <option value="5" {% if user.year_of_study == 5 %}selected{% endif %}>Year 5</option>
+                            <option value="6" {% if user.year_of_study == 6 %}selected{% endif %}>Year 6</option>
                         </select>
                     </div>
 
@@ -342,8 +328,9 @@
                     <div class="form-group">
                         <label for="residencyType">Residency Type</label>
                         <select id="residencyType" name="residencyType" required>
-                            <option value="campus" {% if profile.residency_type == 'campus' %}selected{% endif %}>Within Campus</option>
-                            <option value="offCampus" {% if profile.residency_type == 'offCampus' %}selected{% endif %}>Non-Resident</option>
+                            <option value="">Select residency type</option>
+                            <option value="campus" {% if user.residency_type == 'campus' %}selected{% endif %}>Within Campus</option>
+                            <option value="offCampus" {% if user.residency_type == 'offCampus' %}selected{% endif %}>Non-Resident</option>
                         </select>
                     </div>
 
@@ -351,26 +338,31 @@
                         <label for="hall">Hall of Residence</label>
                         <select id="hall" name="hall">
                             <option value="">Select your hall</option>
-                            <option value="edcomplex" {% if profile.hall == 'edcomplex' %}selected{% endif %}>Ed Complex</option>
-                            <option value="tatton" {% if profile.hall == 'tatton' %}selected{% endif %}>Tatton</option>
-                            <option value="upschool" {% if profile.hall == 'upschool' %}selected{% endif %}>Upschool</option>
+                            <option value="edcomplex" {% if user.hall == 'edcomplex' %}selected{% endif %}>Ed Complex</option>
+                            <option value="tatton" {% if user.hall == 'tatton' %}selected{% endif %}>Tatton</option>
+                            <option value="upschool" {% if user.hall == 'upschool' %}selected{% endif %}>Upschool</option>
                         </select>
                     </div>
 
                     <div class="form-group" id="offCampusGroup" style="display: none;">
-                        <label for="estate">Estate/Area</label>
+                        <label for="area">Area</label>
+                        <input type="text" id="area" name="area" value="{{ user.area|default:'' }}" placeholder="Enter your area">
+                    </div>
+
+                    <div class="form-group" id="offCampusGroup2" style="display: none;">
+                        <label for="estate">Estate</label>
                         <select id="estate" name="estate">
                             <option value="">Select your estate</option>
-                            <option value="gateA" {% if profile.estate == 'gateA' %}selected{% endif %}>Gate Area A</option>
-                            <option value="gateB" {% if profile.estate == 'gateB' %}selected{% endif %}>Gate Area B</option>
-                            <option value="njokerio" {% if profile.estate == 'njokerio' %}selected{% endif %}>Njokerio</option>
+                            <option value="gateA" {% if user.estate == 'gateA' %}selected{% endif %}>Gate Area A</option>
+                            <option value="gateB" {% if user.estate == 'gateB' %}selected{% endif %}>Gate Area B</option>
+                            <option value="njokerio" {% if user.estate == 'njokerio' %}selected{% endif %}>Njokerio</option>
                         </select>
                     </div>
 
                     <!-- Bible Study Information -->
                     <div class="form-group">
                         <label for="sessionsAttended">Bible Study Sessions Attended</label>
-                        <input type="number" id="sessionsAttended" name="sessionsAttended" min="0" value="3" required>
+                        <input type="number" id="sessionsAttended" name="sessionsAttended" min="0" value="{{ user.sessions_attended|default:0 }}" required>
                     </div>
 
                     <div class="form-actions">
@@ -383,30 +375,20 @@
     </div>
 
     <script>
-        // Profile picture upload
-        document.getElementById('uploadBtn').addEventListener('click', function() {
-            document.getElementById('profileUpload').click();
-        });
-
-        document.getElementById('profileUpload').addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('profilePicture').src = event.target.result;
-                    // image to server
-                };
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-
         // Residency type toggle
         document.getElementById('residencyType').addEventListener('change', function() {
             if (this.value === 'campus') {
                 document.getElementById('campusHallGroup').style.display = 'block';
                 document.getElementById('offCampusGroup').style.display = 'none';
-            } else {
+                document.getElementById('offCampusGroup2').style.display = 'none';
+            } else if (this.value === 'offCampus') {
                 document.getElementById('campusHallGroup').style.display = 'none';
                 document.getElementById('offCampusGroup').style.display = 'block';
+                document.getElementById('offCampusGroup2').style.display = 'block';
+            } else {
+                document.getElementById('campusHallGroup').style.display = 'none';
+                document.getElementById('offCampusGroup').style.display = 'none';
+                document.getElementById('offCampusGroup2').style.display = 'none';
             }
         });
 
@@ -416,21 +398,20 @@
             if (residencyType === 'offCampus') {
                 document.getElementById('campusHallGroup').style.display = 'none';
                 document.getElementById('offCampusGroup').style.display = 'block';
+                document.getElementById('offCampusGroup2').style.display = 'block';
+            } else if (residencyType === 'campus') {
+                document.getElementById('campusHallGroup').style.display = 'block';
+                document.getElementById('offCampusGroup').style.display = 'none';
+                document.getElementById('offCampusGroup2').style.display = 'none';
             }
         });
 
-        // to add form handling here later
+        // Cancel button
         document.getElementById('cancelBtn').addEventListener('click', function() {
             if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
-                // Redirect to profile view or reset form
-                window.location.href = "{% url 'profile' %}";
+                window.location.href = "{% url 'members_profile:profile' %}";
             }
-        });
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Profile updated successfully!');
-
         });
     </script>
 </main>
-{% endblock %}
+{% endblock %} 

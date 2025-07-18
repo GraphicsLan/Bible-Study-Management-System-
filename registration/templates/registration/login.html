@@ -49,6 +49,12 @@
             animation: fadeIn 0.5s ease;
         }
 
+        .login-container .django-messages {
+            margin-bottom: 1.5rem;
+            color: #ff0000;
+            text-align: center;
+        }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -180,6 +186,44 @@
 
 <body>
     <div class="login-container">
+        {% if messages %}
+        <div class="django-messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if show_countdown and registered_member_id %}
+        <div class="success-message" style="text-align:center; padding:2em;">
+            <i class="fas fa-check-circle success-icon" style="font-size:3em;color:green;"></i>
+            <h2>Registration Successful!</h2>
+            <p>Your member account has been created successfully.</p>
+            <div class="user-id-display">
+                <span>Member ID:</span>
+                <strong>{{ registered_member_id }}</strong>
+            </div>
+            <p>Login details have been sent to your email.</p>
+            <div class="countdown">
+                <p>Redirecting to login in <span id="countdown">5</span> seconds...</p>
+            </div>
+        </div>
+        <script>
+        (function() {
+            var seconds = 5;
+            var countdownElement = document.getElementById('countdown');
+            var interval = setInterval(function() {
+                seconds--;
+                countdownElement.textContent = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "{% url 'login' %}";
+                }
+            }, 1000);
+        })();
+        </script>
+        {% else %}
         <div class="login-header">
             <h1>Welcome Back</h1>
             <p>Login to access your Bible Study account</p>
@@ -211,6 +255,7 @@
                 New to EUNCCU Bible Study? <a href="{% url 'register' %}">Register here</a>
             </div>
         </form>
+        {% endif %}
     </div>
 
 </body>

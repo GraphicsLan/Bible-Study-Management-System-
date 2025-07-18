@@ -17,11 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const estateSelect = document.getElementById('estate');
     const residencyTypeRadios = document.querySelectorAll('input[name="residencyType"]');
     
-    // Modal elements
-    const successModal = document.getElementById('successModal');
-    const generatedMemberId = document.getElementById('generatedMemberId');
-    const loginRedirect = document.getElementById('loginRedirect');
-    const countdownElement = document.getElementById('countdown');
+    // Remove modal elements
+    // const successModal = document.getElementById('successModal');
+    // const registrationSuccess = document.getElementById('registrationSuccess');
+    // const generatedMemberId = document.getElementById('generatedMemberId');
+    // const loginRedirect = document.getElementById('loginRedirect');
+    // const countdownElement = document.getElementById('countdown');
 
     // Estate options
     const estateOptions = {
@@ -165,11 +166,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     residencyBackBtn.addEventListener('click', () => showSection(personalDetailsSection));
 
-    // Form submission handler
-    registrationForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
+    // Form submission handler (no AJAX, just validation)
+    registrationForm.addEventListener('submit', function(e) {
         if (!validateResidencyInfo()) {
+            e.preventDefault();
             // Scroll to first error
             const firstError = document.querySelector('.error');
             if (firstError) {
@@ -177,65 +177,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             return;
         }
-
-        const submitBtn = document.querySelector('.form-step.active button[type="submit"]');
         
-        // Set loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-        try {
-            const formData = new FormData(registrationForm);
-            const response = await fetch(registrationForm.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                }
-            });
-
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'Registration failed');
-            }
-            
-            // Only show success modal if registration was successful
-            if (data.status === 'success') {
-                generatedMemberId.textContent = data.member_id;
-                successModal.style.display = 'flex';
-                
-                // Start countdown for redirect
-                let seconds = 5;
-                countdownElement.textContent = seconds;
-                const countdownInterval = setInterval(() => {
-                    seconds--;
-                    countdownElement.textContent = seconds;
-                    if (seconds <= 0) {
-                        clearInterval(countdownInterval);
-                        window.location.href = data.loginUrl || "{% url 'login' %}";
-                    }
-                }, 1000);
-            } else {
-                throw new Error(data.message || 'Registration failed');
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Registration failed: ' + error.message);
-        } 
-        finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Complete Registration <i class="fas fa-check"></i>';
-        }
     });
 
-    // Manual login redirect
-    loginRedirect.addEventListener('click', function() {
-        window.location.href = "{% url 'login' %}";
-    });
-
-    // Initialize residency fields visibility
+    
     updateResidencyFields();
 });

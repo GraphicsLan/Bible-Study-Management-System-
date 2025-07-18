@@ -16,10 +16,16 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from registration import views
 from django.conf.urls.static import static
 from django.conf import settings
+from bs_grouping import views as grouping_views
+
+# Customize the default admin site
+admin.site.site_header = "Bible Study System Administration"
+admin.site.site_title = "Bible Study Admin"
+admin.site.index_title = "Bible Study System Dashboard"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,10 +34,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('', views.login_view, name='home'),
-    path('mygroup/', views.mygroup_view, name='mygroup'),
+    path('mygroup/', grouping_views.mygroup_view, name='mygroup'),
     path('discussion/', views.discussion_view, name='discussion'),
     path('biblestudies/', views.biblestudy_view, name='biblestudies'),
-    path('profile/', views.profile_view, name='profile'),
-    path('update_profile/', views.profile_view, name='update_profile'),
+    path('profile/', include('members_profile.urls')),
+    path('stop-impersonation/', views.stop_impersonation_view, name='stop_impersonation'),
 ]
 

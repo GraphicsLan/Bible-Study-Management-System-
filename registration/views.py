@@ -1,27 +1,22 @@
 import random
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from .models import BibleStudy, WeeklyReflection
-from .models import Member
-from .backend import MemberAuthBackend
+from .models import Member, BibleStudy, WeeklyReflection
+from django.contrib.sites.shortcuts import get_current_site
+from bs_grouping.services import GroupingService
 
 def register_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         if Member.objects.filter(email=email).exists():
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'status': 'error', 'message': 'Email already registered.'})
-            else:
-                messages.error(request, 'Email already registered.')
-                return render(request, 'registration/reg.html')
+            messages.error(request, 'Email already registered.')
+            return render(request, 'registration/reg.html')
 
         # Generate random member ID
         member_id = random.randint(1000, 9999)
@@ -31,11 +26,8 @@ def register_view(request):
         # Split full name into first and last names
         full_name_str = request.POST.get('fullName', '').strip()
         if not full_name_str:
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'status': 'error', 'message': 'Full name is required.'})
-            else:
-                messages.error(request, 'Full name is required.')
-                return render(request, 'registration/reg.html')
+            messages.error(request, 'Full name is required.')
+            return render(request, 'registration/reg.html')
         full_name = full_name_str.split(' ', 1)
         first_name = full_name[0]
         last_name = full_name[1] if len(full_name) > 1 else ''
@@ -63,10 +55,12 @@ def register_view(request):
             
             # Send email with login details
             subject = 'Your EUNCCU Bible Study Login Details'
+            site_url = f"https://{get_current_site(request)}"
             html_message = render_to_string('registration/email_template.html', {
                 'member': new_member,
                 'member_id': new_member.member_id,
                 'password': password,
+                'site_url': site_url,
             })
             plain_message = strip_tags(html_message)
             
@@ -79,15 +73,14 @@ def register_view(request):
                 fail_silently=False,
             )
 
-            # Return JSON response for AJAX requests
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({
-                'status': 'success',
-                'member_id': new_member.member_id,
-                'loginUrl': reverse('login'),  
-                 })
-            
-            messages.success(request, 'Registration successful! Please check your email for login details.')
+            # Trigger automatic grouping after registration
+            grouping_service = GroupingService()
+            grouping_service.increment_registration_count()
+
+            # Success: show message and redirect to login with countdown
+            messages.success(request, f'Registration successful! Your Member ID is {new_member.member_id}. Please check your email for login details.')
+            request.session['show_countdown'] = True
+            request.session['registered_member_id'] = new_member.member_id
             return redirect('login')
             
         except Exception as e:
@@ -98,30 +91,35 @@ def register_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        login_id = request.POST.get('loginId')  #  email or phone
+        login_id = request.POST.get('loginId')  # email or phone
         member_id = request.POST.get('memberId')
         password = str(member_id)  # Default password is member ID
-        
-        # First try authenticating with email
-        user = authenticate(request, email=login_id, password=password)
-        
-        # If that fails, try with phone
-        if user is None:
-            try:
-                member = Member.objects.get(phone=login_id)
-                user = authenticate(request, email=member.email, password=password)
-            except Member.DoesNotExist:
-                pass
-        
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Invalid credentials. Please try again.')
-    
-    return render(request, 'registration/login.html')
 
-from .models import BibleStudy, WeeklyReflection
+        # Try to find member by email or phone
+        member = Member.objects.filter(email=login_id).first()
+        if not member:
+            member = Member.objects.filter(phone=login_id).first()
+
+        if member:
+            user = authenticate(request, email=member.email, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Welcome {user.get_full_name()}! You have successfully logged in.')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Invalid member ID or password. Please try again.')
+        else:
+            messages.error(request, 'No account found with that email or phone number.')
+
+    # Show countdown and member ID if redirected from registration
+    show_countdown = request.session.pop('show_countdown', False)
+    registered_member_id = request.session.pop('registered_member_id', None)
+    context = {
+        'show_countdown': show_countdown,
+        'registered_member_id': registered_member_id,
+    }
+    return render(request, 'registration/login.html', context)
+
 
 @login_required
 def dashboard_view(request):
@@ -150,18 +148,44 @@ def logout_view(request):
 
 @login_required
 def mygroup_view(request):
+    # TODO: Implement group summary and details for the user
+    # Pass the user to the template and let it handle the logic like dashboard.html does
     return render(request, 'dashboard/bs_group.html')
 
 @login_required
 def discussion_view(request):
+    # TODO: Implement group discussion feature
     return render(request, 'dashboard/discussion.html')
 
 @login_required
 def biblestudy_view(request):
+    # TODO: Implement Bible studies listing and details
     return render(request, 'dashboard/biblestudies.html')
 
 @login_required
-def profile_view (request):
-    return render(request, 'dashboard/profile.html')
+def stop_impersonation_view(request):
+    """Stop impersonating a member and return to admin user"""
+    if 'original_user_id' in request.session:
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        try:
+            original_user = User.objects.get(id=request.session['original_user_id'])
+            login(request, original_user)
+            
+            # Clear session data
+            request.session.pop('original_user_id', None)
+            request.session.pop('impersonated_member_id', None)
+            
+            messages.success(request, 'Stopped impersonating member and returned to admin account.')
+            return redirect('admin:index')
+        except User.DoesNotExist:
+            messages.error(request, 'Original admin user not found.')
+            return redirect('login')
+    else:
+        messages.error(request, 'No impersonation session found.')
+        return redirect('admin:index')
+
+
 
 
