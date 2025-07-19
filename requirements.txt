@@ -1,3 +1,7 @@
-pip install django 
-env #create vertual environment
-pip install django mysqlclient django-environ django-allauth django-crispy-forms
+django 
+env #create virtual environment
+django 
+mysqlclient 
+django-environ 
+django-allauth 
+django-crispy-forms

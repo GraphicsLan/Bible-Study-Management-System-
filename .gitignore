@@ -1,0 +1,63 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django static and media files (generated at runtime)
+staticfiles/
+media/
+
+# Django migrations (optional to ignore if you want to keep DB structure tracked)
+**/migrations/
+!*/migrations/__init__.py
+
+# Local env settings
+.env
+*.env
+
+# VS Code settings
+.vscode/
+
+# Python virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# macOS and Windows
+.DS_Store
+Thumbs.db
+
+# Logs and backups
+*.log
+*.bak
+
+# SQLite database (if used)
+db.sqlite3
+
+# Pip cache
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+*.cover
+
+# IDEs and editors
+.idea/
+*.swp
+*.swo
+
+# Node modules (if using npm for frontend)
+node_modules/
